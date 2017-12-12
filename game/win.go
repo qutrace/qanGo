@@ -1,14 +1,14 @@
 package game
 
 func rateBoard(b *Board) State {
-	conditions := winConditions()
+	conditions := WinConditions()
 	for _, condition := range conditions {
-		cells := movesToCells(b, condition)
+		cells := MovesToCells(b, condition)
 		res := rateCells(cells)
 		if res != Unknown {
 			return res
 		}
-	}	
+	}
 	if b.GetTurn() > 35 {
 		return Draw
 	}
@@ -38,7 +38,7 @@ func rateCells(cells []*Cell) State {
 	return WinFalse
 }
 
-func movesToCells(b *Board, moves []Move) []*Cell {
+func MovesToCells(b *Board, moves []Move) []*Cell {
 	length := len(moves)
 	getter := cellGetter(b)
 	cells := make([]*Cell, length)

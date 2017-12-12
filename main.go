@@ -1,8 +1,9 @@
-package main 
+package main
 
 import (
 	"fmt"
 	"github.com/qutrace/qanGo/game"
+	"github.com/qutrace/qanGo/ai"
 )
 
 func main() {
@@ -18,16 +19,19 @@ func main() {
 		select {
 			case err := <-report:
 				fmt.Println(err)
-			case cur = <- board:
+			case cur = <-board:
 				fmt.Println(cur)
-				scan(moves, abort)
-			case cur = <- done:
+				if !cur.GetPlayer() {
+					moves <-ai.GetMove(cur)
+				} else {
+					scan(moves, abort)
+				}
+			case cur = <-done:
 				fmt.Println(cur)
 				fmt.Println(cur.GetState())
 				fmt.Println("finished")
 				return
-				
-		}	
+		}
 	}
 }
 

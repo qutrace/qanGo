@@ -4,8 +4,8 @@ import (
 	"github.com/qutrace/qanGo/game"
 )
 
-func GetRating(b *Board, player bool) BoardState {
-	cells := game.WinCondonditions() //array of all winconditions
+func GetRating(b *game.Board, player bool) int {
+	cells := game.WinConditions() //array of all winconditions
 	const (
 		cwin0 = iota
 		cwin1
@@ -55,13 +55,13 @@ func GetRating(b *Board, player bool) BoardState {
 		return cboth
 	}
 	nums := [11]int{} //win0, win1, draw, force1, forcable1, force0, forcable0, both
-	rateCond := func(c []*Cell) int {
+	rateCond := func(c []*game.Cell) int {
 		l := len(c)
 		p1 := 0
 		p0 := 0
 		for _, cell := range c {
-			if cell != nil {
-				if cell.Player {
+			if *cell != nil {
+				if **cell {
 					p1++
 				} else {
 					p0++
@@ -71,24 +71,24 @@ func GetRating(b *Board, player bool) BoardState {
 		return getnum(p0, p1, l)
 	}
 	for _, cond := range cells {
-		cells := MovesToCells(b, cond)
+		cells := game.MovesToCells(b, cond)
 		nums[rateCond(cells)]++
 	}
 
 	if nums[cwin0] > 0 {
 		if !player {
-			return BoardState(8000)
+			return int(8000)
 		}
-		return BoardState(0)
+		return int(0)
 	}
 	if nums[cwin1] > 0 {
 		if player {
-			return BoardState(8000)
+			return int(8000)
 		}
-		return BoardState(0)
+		return int(0)
 	}
 	if nums[cdraw] > 60 {
-		return BoardState(1)
+		return int(1)
 	}
 	//fmt.Println(nums)
 	offset := 4000
@@ -96,6 +96,6 @@ func GetRating(b *Board, player bool) BoardState {
 	if player {
 		num = num * -1
 	}
-
-	return BoardState(num + offset)
+	//fmt.Println(num + offset)
+	return int(num + offset)
 }

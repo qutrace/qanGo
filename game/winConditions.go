@@ -1,6 +1,6 @@
 package game
 
-func winConditions() [][]Move {
+func WinConditions() [][]Move {
 	cur := 0
 	max := 2*12 + 25 + 3*4
 	res := make([][]Move, max)
