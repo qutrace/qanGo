@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/qutrace/qetim/game"
+	"github.com/qutrace/qanGo/game"
 )
 
 func main() {
