@@ -7,6 +7,7 @@ type Move struct {
 	Y int
 }
 type State int
+
 const (
 	Unknown State = iota
 	WinTrue
@@ -16,13 +17,23 @@ const (
 
 func (b *Board) Apply(m Move) (e error) {
 	e = MoveError{"not on board"}
-	if m.X > 5 { return }
-	if m.X < 0 { return }
-	if m.Y > 5 { return }
-	if m.Y < 0 { return }
+	if m.X > 5 {
+		return
+	}
+	if m.X < 0 {
+		return
+	}
+	if m.Y > 5 {
+		return
+	}
+	if m.Y < 0 {
+		return
+	}
 	e = MoveError{"already placed"}
 	place := &(b[m.Y][m.X])
-	if *place != nil { return }
+	if *place != nil {
+		return
+	}
 	e = nil
 	player := b.GetPlayer()
 	*place = &player
@@ -30,14 +41,16 @@ func (b *Board) Apply(m Move) (e error) {
 }
 
 func (b *Board) GetPlayer() bool {
-	return b.GetTurn() % 2 == 0
+	return b.GetTurn()%2 == 0
 }
 
 func (b *Board) GetTurn() int {
 	res := 0
-	for _,row := range b {
-		for _,cell := range row {
-			if cell != nil { res++ }
+	for _, row := range b {
+		for _, cell := range row {
+			if cell != nil {
+				res++
+			}
 		}
 	}
 	return res
@@ -53,11 +66,12 @@ func (s *State) Running() bool {
 type MoveError struct {
 	err string
 }
+
 func (m MoveError) Error() string {
 	return m.err
 }
 
-func PlayCustom(init Board, a func(b Board) Move , b func(b Board) Move, print func(b Board), finished func(s State), printe func(e error)) {
+func PlayCustom(init Board, a func(b Board) Move, b func(b Board) Move, print func(b Board), finished func(s State), printe func(e error)) {
 	board := init
 	state := board.GetState()
 	getMove := a
@@ -68,12 +82,12 @@ func PlayCustom(init Board, a func(b Board) Move , b func(b Board) Move, print f
 
 		//select getMove function
 		switch board.GetPlayer() {
-			case true:
-				getMove = a
-			case false:
-				getMove = b
-			default:
-				return
+		case true:
+			getMove = a
+		case false:
+			getMove = b
+		default:
+			return
 		}
 
 		//apply (get) move until move is legal
@@ -99,21 +113,21 @@ func applyUntilLegal(board *Board, getMove func(b Board) Move, printe func(e err
 	}
 }
 
-func PlayCustomMirror(init Board, getMove func(b Board) Move, print func(b Board), finished func (s State), printe func(e error)) {
+func PlayCustomMirror(init Board, getMove func(b Board) Move, print func(b Board), finished func(s State), printe func(e error)) {
 	PlayCustom(init, getMove, getMove, print, finished, printe)
 }
 
 type Game struct {
-	Board Board
-	GetMoveA func(b Board) Move
-	GetMoveB func(b Board) Move
+	Board      Board
+	GetMoveA   func(b Board) Move
+	GetMoveB   func(b Board) Move
 	PrintBoard func(b Board)
-	Finished func (s State)
-	PrintError func (e error)
+	Finished   func(s State)
+	PrintError func(e error)
 }
 
 func (g Game) Play() {
-	PlayCustom(g.Board, g.GetMoveA, g.GetMoveB,g.PrintBoard, g.Finished, g.PrintError)
+	PlayCustom(g.Board, g.GetMoveA, g.GetMoveB, g.PrintBoard, g.Finished, g.PrintError)
 }
 
 func PlayChan(board *Board, print chan Board, getmove chan Move, abort chan bool, report chan error, done chan Board) {
@@ -121,14 +135,14 @@ func PlayChan(board *Board, print chan Board, getmove chan Move, abort chan bool
 	for state.Running() {
 		print <- *board
 		select {
-			case move := <- getmove:
-				err := board.Apply(move)
-				if err != nil {
-					report <- err
-				}
-			case <-abort:
-				done <- *board
-				return
+		case move := <-getmove:
+			err := board.Apply(move)
+			if err != nil {
+				report <- err
+			}
+		case <-abort:
+			done <- *board
+			return
 		}
 		state = board.GetState()
 	}

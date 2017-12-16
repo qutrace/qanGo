@@ -1,7 +1,5 @@
 package game
 
-
-
 func (b Board) String() string {
 	res := ""
 	for _, line := range b {
@@ -10,8 +8,10 @@ func (b Board) String() string {
 				res += "#"
 			} else {
 				switch *char {
-					case true: res += "o"
-					case false: res += "x"
+				case true:
+					res += "o"
+				case false:
+					res += "x"
 				}
 			}
 			res += " "
@@ -23,13 +23,13 @@ func (b Board) String() string {
 
 func (s State) String() string {
 	switch s {
-		case Unknown:
+	case Unknown:
 		return "Unknown"
-		case WinTrue:
+	case WinTrue:
 		return "WinTrue"
-		case WinFalse:
+	case WinFalse:
 		return "WinFalse"
-		case Draw:
+	case Draw:
 		return "Draw"
 	}
 	return "state"

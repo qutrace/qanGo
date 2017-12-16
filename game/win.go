@@ -44,7 +44,7 @@ func MovesToCells(b *Board, moves []Move) []*Cell {
 	cells := make([]*Cell, length)
 	for i := 0; i < length; i++ {
 		m := moves[i]
-		cells[i] = getter(m.X,m.Y)
+		cells[i] = getter(m.X, m.Y)
 	}
 	return cells
 }
@@ -54,4 +54,3 @@ func cellGetter(b *Board) func(x, y int) *Cell {
 		return &(b[y][x])
 	}
 }
-
